@@ -1,11 +1,9 @@
-# Machine Learning Project — Step by Step
+# Machine Learning — Step by Step
 
-**Module 1 · Scikit-Learn: Linear Classification on the Iris Dataset**
-
-A hands-on, notebook-driven machine learning learning series. Each module is a
-self-contained Jupyter notebook that walks through one complete ML workflow —
-from importing libraries and loading data all the way to evaluating and
-cross-validating a trained model.
+A hands-on, notebook-driven machine learning learning series. Each **module** is
+a self-contained Jupyter notebook that walks through one complete ML workflow —
+from importing libraries and loading data all the way to training, evaluating
+and cross-validating a model.
 
 ![Python](https://img.shields.io/badge/python-3.13-3776AB?logo=python&logoColor=white)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-1.7.2-F7931E?logo=scikitlearn&logoColor=white)
@@ -14,12 +12,26 @@ cross-validating a trained model.
 
 ## Overview
 
-Module 1 is a complete, beginner-friendly introduction to **supervised
-classification** with scikit-learn. Using the classic **Iris** dataset, it
-builds up a linear classifier (`SGDClassifier`) step by step and measures its
-performance honestly with both a held-out test set and 5-fold cross-validation.
+This repository is a growing series of end-to-end **scikit-learn** walkthroughs.
+Every module is standalone, deliberately reproducible (fixed `random_state`s) and
+written for beginners who want to see a full machine-learning workflow in one
+readable notebook.
 
-## The Notebook
+| Module | Notebook | Theme | Algorithms | Dataset |
+| --- | --- | --- | --- | --- |
+| 1 | [`machine_learning001.ipynb`](machine_learning001.ipynb) | Linear classification | `SGDClassifier` (linear) | Iris |
+| 2 | [`machine_learning002.ipynb`](machine_learning002.ipynb) | Intro to supervised & unsupervised learning | `SGDClassifier`, `KMeans`, `SGDRegressor` | Iris + California housing |
+
+---
+
+## Module 1 · Scikit-Learn: Linear Classification on the Iris Dataset
+
+A complete, beginner-friendly introduction to **supervised classification** with
+scikit-learn. Using the classic **Iris** dataset, it builds up a linear
+classifier (`SGDClassifier`) step by step and measures its performance honestly
+with both a held-out test set and 5-fold cross-validation.
+
+### The notebook
 
 | Item | Detail |
 | --- | --- |
@@ -29,7 +41,7 @@ performance honestly with both a held-out test set and 5-fold cross-validation.
 | Model | `SGDClassifier` (linear), wrapped in a `Pipeline` with `StandardScaler` |
 | Test split | 25% hold-out (`random_state=33`) → 112 train / 38 test |
 
-##  What the notebook covers
+### What the notebook covers
 
 1. **Setup** — import `IPython`, `scikit-learn`, `pandas`, `numpy` and `matplotlib`, and print their versions.
 2. **Load data** — `datasets.load_iris()` into `x_iris` (150 × 4) and `y_iris` (150,).
@@ -41,7 +53,7 @@ performance honestly with both a held-out test set and 5-fold cross-validation.
 8. **Evaluate** — accuracy on train and test, plus `classification_report` and `confusion_matrix`.
 9. **Cross-validate** — 5-fold `KFold` (shuffled, `random_state=33`) over a `Pipeline`, then report mean ± standard error.
 
-##  Results
+### Results
 
 **Accuracy**
 
@@ -77,11 +89,95 @@ fold scores : [0.667, 0.800, 0.767, 0.867, 0.867]
 mean ± SEM  : 0.793 (±0.037)
 ```
 
-##  Project Structure
+---
+
+## Module 2 · A Gentle Introduction to Machine Learning with Python and Scikit-learn
+
+A single, longer notebook that tours the three pillars of classical machine
+learning with scikit-learn — **classification**, **clustering** and
+**regression** — all on familiar, ready-to-use datasets.
+
+### The notebook
+
+| Item | Detail |
+| --- | --- |
+| File | [`machine_learning002.ipynb`](machine_learning002.ipynb) |
+| Datasets | Iris (`load_iris`) — 150 × 4; California housing (`fetch_california_housing`) — 20,640 × 8 |
+| Models | `SGDClassifier(loss="log_loss")`, `KMeans(n_clusters=3, init="k-means++")`, `SGDRegressor` |
+| Test split | 25% hold-out (`random_state=33`); scale-then-model, scaler fitted on the training set only |
+
+> **Note:** `fetch_california_housing()` downloads the dataset on first use, so an
+> internet connection is needed for the regression section.
+
+### What the notebook covers
+
+1. **Setup** — print Python, IPython, NumPy, scikit-learn and Matplotlib versions.
+2. **Load data** — Iris into `x_iris` / `y_iris`; inspect feature names, target classes and the first instance.
+3. **Visualise** — 2-D scatter plots of the sepal and petal measurements, coloured by class.
+4. **Classification — split & scale** — 25% hold-out (`random_state=33`); `StandardScaler` fitted on the training set only, with a mean/σ sanity check.
+5. **Binary classifier** — collapse the problem to *setosa vs. rest* and train `SGDClassifier(loss="log_loss")`; plot the decision boundary.
+6. **Prediction** — classify a single flower and print the decision function scores.
+7. **Three-class problem** — retrain on the original three classes and draw the three "one-vs-rest" boundaries.
+8. **Evaluation** — training/testing accuracy, confusion matrix and classification report.
+9. **All four features** — repeat with all four attributes to show the accuracy jump.
+10. **Clustering** — `KMeans` on the sepal, petal and all-four-attribute spaces; plot Voronoi regions and centroids.
+11. **Regression** — standardise the California housing data, define a reusable `train_and_evaluate` helper and compare `SGDRegressor` **without** penalty and **with** `l2`.
+
+### Results
+
+**Classification — Iris, two features (`SGDClassifier`, `random_state=33`)**
+
+| Set | Accuracy |
+| --- | --- |
+| Training set | 0.69 |
+| Test set | 0.71 |
+
+| Class | Precision | Recall | F1-score | Support |
+| --- | --- | --- | --- | --- |
+| setosa | 1.00 | 1.00 | 1.00 | 8 |
+| versicolor | 0.00 | 0.00 | 0.00 | 11 |
+| virginica | 0.63 | 1.00 | 0.78 | 19 |
+| **accuracy** | | | **0.71** | 38 |
 
 ```
-machine learning001/
-├── machine_learning001.ipynb   # Module 1 notebook
+[[ 8  0  0]     # setosa     -> 8 correct
+ [ 0  0 11]     # versicolor -> 0 correct, 11 predicted virginica
+ [ 0  0 19]]    # virginica  -> 19 correct
+```
+
+> With only two features, `versicolor` and `virginica` collapse together — a
+> clear motivation for using more features.
+
+**Classification — Iris, all four features (`SGDClassifier`, `random_state=33`)**
+
+| Class | Precision | Recall | F1-score | Support |
+| --- | --- | --- | --- | --- |
+| setosa | 1.00 | 1.00 | 1.00 | 8 |
+| versicolor | 1.00 | 0.73 | 0.84 | 11 |
+| virginica | 0.86 | 1.00 | 0.93 | 19 |
+| **accuracy** | | | **0.92** | 38 |
+
+> Accuracy jumps from **0.71** to **0.92** simply by adding the petal features.
+
+**Regression — California housing (`SGDRegressor`, 5-fold CV)**
+
+| Penalty | Training score (R²) | 5-fold CV score |
+| --- | --- | --- |
+| `None` | -5817.55 | -15,302,479.59 |
+| `l2` | -5722.70 | -15,093,226.69 |
+
+> The regression section is intentionally left "raw": with default settings the
+> `SGDRegressor` is unstable on unscaled targets, which makes it a good teaching
+> example of why feature/target scaling and hyper-parameter tuning matter.
+
+---
+
+## Project Structure
+
+```
+machine-learning001/
+├── machine_learning001.ipynb   # Module 1 — linear classification on Iris
+├── machine_learning002.ipynb   # Module 2 — classification, clustering & regression
 ├── requirements.txt            # pinned dependencies
 ├── .gitattributes              # line-ending / diff normalisation
 ├── .gitignore
@@ -89,7 +185,7 @@ machine learning001/
 └── README.md
 ```
 
-##  Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -112,10 +208,12 @@ pip install -r requirements.txt
 jupyter lab
 ```
 
-Then open `machine_learning001.ipynb` and **Run All** cells. No data download is
-required — the Iris dataset ships with scikit-learn.
+Then open `machine_learning001.ipynb` or `machine_learning002.ipynb` and
+**Run All** cells. The Iris dataset ships with scikit-learn, so no download is
+required; the regression section of Module 2 downloads the California housing
+dataset on first run.
 
-##  Key concepts covered
+## Key concepts covered
 
 - Train/test splitting and using `random_state` for reproducibility
 - Feature standardisation, and why the scaler is fitted on the training set only
@@ -123,27 +221,31 @@ required — the Iris dataset ships with scikit-learn.
 - Accuracy, precision, recall, F1-score and the confusion matrix
 - Why cross-validation gives a more reliable estimate than a single split
 - Reproducible pipelines with `sklearn.pipeline.Pipeline`
+- Binary vs. multiclass ("one-vs-rest") classification
+- Unsupervised clustering with `KMeans` (Voronoi regions and centroids)
+- Regression scoring (R²) and cross-validating regressors
 
-##  Roadmap
+## Roadmap
 
 - [x] **Module 1** — Linear classification with scikit-learn (Iris dataset)
-- [ ] **Module 2** — coming soon
+- [x] **Module 2** — Intro to classification, clustering & regression
 - [ ] Model selection & hyper-parameter tuning
 - [ ] Tree-based ensembles
-- [ ] Unsupervised learning
+- [ ] Unsupervised learning (deep dive)
 
-##  License
+## License
 
 Released under the **MIT License** — see [`LICENSE`](LICENSE) for details.
 
-##  Author
+## Author
 
 **Peter Owili**
 
-##  Acknowledgements
+## Acknowledgements
 
-- The **Iris** dataset (R. A. Fisher), bundled with scikit-learn.
-- The scikit-learn, NumPy, pandas and Matplotlib documentation and communities.
+- The **Iris** dataset (R. A. Fisher) — bundled with scikit-learn.
+- The **California housing** dataset — available via `sklearn.datasets.fetch_california_housing`.
+- The scikit-learn, NumPy, pandas, SciPy and Matplotlib documentation and communities.
 
 ---
 

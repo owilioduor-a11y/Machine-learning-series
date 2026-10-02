@@ -1,8 +1,11 @@
 # ---------------------------------------------------------------------------
-# Environment for machine_learning001.ipynb  (Module 1 - Scikit-Learn)
+# Environment for the Machine Learning notebooks
+#   - machine_learning001.ipynb  (Module 1 - linear classification)
+#   - machine_learning002.ipynb  (Module 2 - classification, clustering, regression)
 # Generated Python version: 3.13.9
-# The pinned versions below are exactly what the notebook reported when it was
-# last executed (see the "Importing libraries" cell).
+# The pinned versions below are exactly what the notebooks reported when they
+# were last executed (see the "Importing libraries" / "Setting the environment"
+# cells).
 # ---------------------------------------------------------------------------
 
 # Core data-science stack
