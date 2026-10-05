@@ -21,6 +21,7 @@ readable notebook.
 | --- | --- | --- | --- | --- |
 | 1 | [`machine_learning001.ipynb`](machine_learning001.ipynb) | Linear classification | `SGDClassifier` (linear) | Iris |
 | 2 | [`machine_learning002.ipynb`](machine_learning002.ipynb) | Intro to supervised & unsupervised learning | `SGDClassifier`, `KMeans`, `SGDRegressor` | Iris + California housing |
+| 3 | [`machine_learning003.ipynb`](machine_learning003.ipynb) | Supervised learning — image recognition | `SVC(kernel="linear")` | Olivetti faces |
 
 ---
 
@@ -172,12 +173,104 @@ learning with scikit-learn — **classification**, **clustering** and
 
 ---
 
+## Module 3 · Supervised Learning: Image Recognition with Support Vector Machines
+
+The series' first step beyond tabular data. Using the **Olivetti faces** dataset —
+400 grayscale 64×64 portraits of 40 different people — this notebook builds a
+linear **Support Vector Classifier** and uses it for two progressively harder
+problems: *who is this person?* and *is this person wearing glasses?*
+
+### The notebook
+
+| Item | Detail |
+| --- | --- |
+| File | [`machine_learning003.ipynb`](machine_learning003.ipynb) |
+| Dataset | Olivetti faces (`sklearn.datasets.fetch_olivetti_faces`) — 400 images, 4096 features (64×64), 40 classes |
+| Model | `SVC(kernel="linear")` — one hyperplane per class, one-vs-rest |
+| Split | 25% hold-out (`random_state=0`), plus a custom 390/10 split for the "same person" test |
+
+> **Note:** `fetch_olivetti_faces()` downloads the dataset on first use, so an
+> internet connection is needed the first time the notebook runs. Please give
+> credit to AT&T Laboratories Cambridge when reusing these images.
+
+### What the notebook covers
+
+1. **Setup** — print IPython, NumPy, scikit-learn and Matplotlib versions.
+2. **Load data** — `fetch_olivetti_faces()` into `faces`; inspect `data`, `images`, `target` and the value range (0.0 – 1.0).
+3. **Visualise** — a reusable `print_faces()` helper that renders a 20×20 grid of faces with the class label and index in each corner; used for the first 20 faces, then all 400.
+4. **Model** — `SVC(kernel="linear")` as the hyperplane that separates one class from the rest.
+5. **Split** — 25% hold-out (`random_state=0`).
+6. **Cross-validate** — a reusable `evaluate_cross_validation()` helper running 5-fold shuffled `KFold` and reporting mean ± `scipy.stats.sem`.
+7. **Evaluate** — a reusable `train_and_evaluate()` helper printing train/test accuracy, `classification_report` and `confusion_matrix` across all 40 classes.
+8. **Task B — with or without glasses** — hand-label the image index ranges for subjects wearing glasses and rebuild a binary target with `create_target()`.
+9. **Linear kernel on the binary problem** — cross-validate and evaluate the glasses classifier.
+10. **Same-subject test** — hold out images 30–40 (one person, sometimes with and sometimes without glasses), train on the other 390, and check the model learned glasses rather than faces.
+11. **Inspect the errors** — plot the 10 held-out faces with their predicted labels.
+
+### Results
+
+**Identity — 40-class face recognition (`SVC(kernel="linear")`, `random_state=0`)**
+
+| Set | Accuracy |
+| --- | --- |
+| Training set (300 samples) | 1.00 |
+| Test set (100 samples) | 0.99 |
+
+```
+5-fold CV scores : [0.9875 0.975  0.9875 0.95   0.975 ]
+mean ± SEM       : 0.975 (±0.007)
+macro / weighted : 1.00 / 0.99 f1 (0.99 accuracy)
+```
+
+> Only one person is ever confused with another; a hyperplane in 4096 dimensions
+> is already enough to separate 40 identities almost perfectly.
+
+**Glasses — binary "with / without" (`SVC(kernel="linear")`)**
+
+| Set | Accuracy |
+| --- | --- |
+| Training set | 1.00 |
+| Test set (100 samples) | 0.99 |
+
+| Class | Precision | Recall | F1-score | Support |
+| --- | --- | --- | --- | --- |
+| no glasses (0.0) | 1.00 | 0.99 | 0.99 | 67 |
+| glasses (1.0) | 0.97 | 1.00 | 0.99 | 33 |
+| **accuracy** | | | **0.99** | 100 |
+
+```
+5-fold CV scores : [1.0  0.95  0.983 0.983 0.933]
+mean ± SEM       : 0.970 (±0.012)
+confusion matrix : [[66  1]
+                    [ 0 33]]
+```
+
+**Glasses — held-out subject (train on 390, test on images 30–40)**
+
+| Class | Precision | Recall | F1-score | Support |
+| --- | --- | --- | --- | --- |
+| no glasses (0.0) | 0.83 | 1.00 | 0.91 | 5 |
+| glasses (1.0) | 1.00 | 0.80 | 0.89 | 5 |
+| **accuracy** | | | **0.90** | 10 |
+
+```
+confusion matrix : [[5 0]
+                    [1 4]]
+```
+
+> A single image is misclassified as "no glasses" — plausibly because the
+> subject's eyes are closed. The model is therefore reacting to a glasses-shaped
+> feature rather than memorising faces.
+
+---
+
 ## Project Structure
 
 ```
 machine-learning001/
 ├── machine_learning001.ipynb   # Module 1 — linear classification on Iris
 ├── machine_learning002.ipynb   # Module 2 — classification, clustering & regression
+├── machine_learning003.ipynb   # Module 3 — SVM image recognition on Olivetti faces
 ├── requirements.txt            # pinned dependencies
 ├── .gitattributes              # line-ending / diff normalisation
 ├── .gitignore
@@ -208,10 +301,10 @@ pip install -r requirements.txt
 jupyter lab
 ```
 
-Then open `machine_learning001.ipynb` or `machine_learning002.ipynb` and
-**Run All** cells. The Iris dataset ships with scikit-learn, so no download is
-required; the regression section of Module 2 downloads the California housing
-dataset on first run.
+Then open `machine_learning001.ipynb`, `machine_learning002.ipynb` or
+`machine_learning003.ipynb` and **Run All** cells. The Iris dataset ships with
+scikit-learn, so no download is required; the California housing dataset
+(Module 2) and the Olivetti faces dataset (Module 3) download on first run.
 
 ## Key concepts covered
 
@@ -224,11 +317,15 @@ dataset on first run.
 - Binary vs. multiclass ("one-vs-rest") classification
 - Unsupervised clustering with `KMeans` (Voronoi regions and centroids)
 - Regression scoring (R²) and cross-validating regressors
+- Kernel methods: how a linear `SVC` draws a hyperplane between classes
+- Working with high-dimensional image data (flat 4096-dim vectors) and human-constructed labels
+- Designing an evaluation split that tests the hypothesis instead of the training set
 
 ## Roadmap
 
 - [x] **Module 1** — Linear classification with scikit-learn (Iris dataset)
 - [x] **Module 2** — Intro to classification, clustering & regression
+- [x] **Module 3** — Supervised learning: SVM image recognition (Olivetti faces)
 - [ ] Model selection & hyper-parameter tuning
 - [ ] Tree-based ensembles
 - [ ] Unsupervised learning (deep dive)
@@ -245,6 +342,7 @@ Released under the **MIT License** — see [`LICENSE`](LICENSE) for details.
 
 - The **Iris** dataset (R. A. Fisher) — bundled with scikit-learn.
 - The **California housing** dataset — available via `sklearn.datasets.fetch_california_housing`.
+- The **Olivetti faces** dataset — courtesy of AT&T Laboratories Cambridge, available via `sklearn.datasets.fetch_olivetti_faces`.
 - The scikit-learn, NumPy, pandas, SciPy and Matplotlib documentation and communities.
 
 ---

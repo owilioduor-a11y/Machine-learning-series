@@ -2,6 +2,7 @@
 # Environment for the Machine Learning notebooks
 #   - machine_learning001.ipynb  (Module 1 - linear classification)
 #   - machine_learning002.ipynb  (Module 2 - classification, clustering, regression)
+#   - machine_learning003.ipynb  (Module 3 - SVM image recognition on Olivetti faces)
 # Generated Python version: 3.13.9
 # The pinned versions below are exactly what the notebooks reported when they
 # were last executed (see the "Importing libraries" / "Setting the environment"
