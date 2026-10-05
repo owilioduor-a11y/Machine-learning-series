@@ -267,7 +267,7 @@ confusion matrix : [[5 0]
 ## Project Structure
 
 ```
-machine-learning001/
+Machine-learning-series/
 ├── machine_learning001.ipynb   # Module 1 — linear classification on Iris
 ├── machine_learning002.ipynb   # Module 2 — classification, clustering & regression
 ├── machine_learning003.ipynb   # Module 3 — SVM image recognition on Olivetti faces
@@ -288,8 +288,8 @@ machine-learning001/
 ### Installation
 
 ```bash
-git clone https://github.com/owilioduor-a11y/machine-learning001.git
-cd machine-learning001
+git clone https://github.com/owilioduor-a11y/Machine-learning-series.git
+cd Machine-learning-series
 
 python -m venv .venv
 # Windows (PowerShell)
